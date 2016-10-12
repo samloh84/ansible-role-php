@@ -1,0 +1,19 @@
+urls:
+    7.1.0RC3:
+        source:
+            file: php-7.1.0RC3.tar.gz
+            dir: php-7.1.0RC3
+            url: 'https://downloads.php.net/~davey/php-7.1.0RC3.tar.gz'
+            hash: 7F100E02F62CDB2909C1C32CC41316CBDBCA9DFCBB0B7C0BD3968B6DA10E0721
+    7.0.11:
+        source:
+            file: php-7.0.11.tar.gz
+            dir: php-7.0.11
+            url: 'https://php.net/get/php-7.0.11.tar.gz/from/this/mirror'
+            hash: 02D27B5D140DBAD8D400A95AF808E1E9CE87AA8D2A2100870734BA26E6700D79
+    5.6.26:
+        source:
+            file: php-5.6.26.tar.gz
+            dir: php-5.6.26
+            url: 'https://php.net/get/php-5.6.26.tar.gz/from/this/mirror'
+            hash: F76B6CC23739D9DABF875AEE57D91AE73F15E88DDF78803369B8B4728B19B924

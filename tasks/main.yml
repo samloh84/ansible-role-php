@@ -1,0 +1,76 @@
+- set_fact:
+    download_dir: "{{ role_path }}/files"
+    temp_dir: "{{ tmp_prefix }}/php-{{ php_version }}"
+    php_dir: "{{ urls[php_version].source.dir }}"
+    php_url: "{{ urls[php_version].source.url }}"
+    php_hash: "{{ urls[php_version].source.hash }}"
+    php_filename: "{{ urls[php_version].source.file }}"
+
+- set_fact:
+    php_home: "{{ prefix }}/{{ php_dir }}"
+    php_archive_temp_path: "{{ temp_dir }}/{{ php_filename }}"
+    php_archive_download_path: "{{ download_dir }}/{{ php_filename }}"
+    php_temp_path: "{{ temp_dir }}/{{ php_dir }}"
+
+- name: "Create Temporary Directory {{ temp_dir }}"
+  file:
+    path: "{{ temp_dir }}"
+    state: directory
+
+- name: "Create Php Directory {{ php_home }}"
+  file:
+    path: "{{ php_home }}"
+    state: directory
+
+- name: "Install GCC C++"
+  yum:
+    name: "gcc-c++"
+    state: present
+
+- name: "Create Download Directory on control server: {{ download_dir }}"
+  delegate_to: 127.0.0.1
+  file:
+    path: "{{ download_dir }}"
+    state: directory
+
+
+- name: "Download Php archive to control server Download Path: {{ php_archive_download_path }}"
+  delegate_to: 127.0.0.1
+  get_url:
+    url: "{{ php_url }}"
+    dest: "{{ php_archive_download_path }}"
+    checksum: "sha256:{{ php_hash }}"
+
+- name: "Copy Php archive to Temporary Path: {{ php_archive_temp_path }}"
+  copy:
+    src: "{{ php_archive_download_path }}"
+    dest: "{{ php_archive_temp_path }}"
+
+- name: "Extract Php archive to Directory: {{ temp_dir }}"
+  unarchive:
+    src: "{{ php_archive_temp_path }}"
+    dest: "{{ temp_dir }}"
+    remote_src: yes
+
+- name: "Compile Php"
+  shell: "./configure  --prefix {{ php_home }}"
+  args:
+    chdir: "{{ php_temp_path }}"
+
+- shell: "make"
+  args:
+    chdir: "{{ php_temp_path }}"
+
+- shell: "make install"
+  args:
+    chdir: "{{ php_temp_path }}"
+
+- name: "Install Php environment variables"
+  template:
+    src: "templates/php.sh.j2"
+    dest: "/etc/profile.d/php.sh"
+
+- name: "Clean Temporary files"
+  file:
+    path: "{{ tmp_prefix }}"
+    state: absent
