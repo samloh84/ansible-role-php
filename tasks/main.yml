@@ -17,7 +17,7 @@
     path: "{{ temp_dir }}"
     state: directory
 
-- name: "Create Php Directory {{ php_home }}"
+- name: "Create PHP Directory {{ php_home }}"
   file:
     path: "{{ php_home }}"
     state: directory
@@ -27,6 +27,26 @@
     name: "gcc-c++"
     state: present
 
+- name: "Install PHP Dependencies"
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libxml2-devel
+    - openssl-devel
+    - bzip2-devel
+    - libcurl-devel
+    - libwebp-devel
+    - libjpeg-devel
+    - libpng-devel
+    - libXpm-devel
+    - libicu-devel
+    - openldap-devel
+    - cyrus-sasl-devel
+    - libc-client-devel
+    - libmcrypt-devel
+    - postgresql-devel
+
 - name: "Create Download Directory on control server: {{ download_dir }}"
   delegate_to: 127.0.0.1
   file:
@@ -34,26 +54,52 @@
     state: directory
 
 
-- name: "Download Php archive to control server Download Path: {{ php_archive_download_path }}"
+- name: "Download PHP archive to control server Download Path: {{ php_archive_download_path }}"
   delegate_to: 127.0.0.1
   get_url:
     url: "{{ php_url }}"
     dest: "{{ php_archive_download_path }}"
     checksum: "sha256:{{ php_hash }}"
 
-- name: "Copy Php archive to Temporary Path: {{ php_archive_temp_path }}"
+- name: "Copy PHP archive to Temporary Path: {{ php_archive_temp_path }}"
   copy:
     src: "{{ php_archive_download_path }}"
     dest: "{{ php_archive_temp_path }}"
 
-- name: "Extract Php archive to Directory: {{ temp_dir }}"
+- name: "Extract PHP archive to Directory: {{ temp_dir }}"
   unarchive:
     src: "{{ php_archive_temp_path }}"
     dest: "{{ temp_dir }}"
     remote_src: yes
 
-- name: "Compile Php"
-  shell: "./configure  --prefix {{ php_home }}"
+- name: "Compile PHP"
+  shell: >
+    ./configure
+    --prefix /opt/php/php-7.0.11
+    --enable-fpm
+    --with-openssl
+    --with-zlib
+    --enable-bcmath
+    --with-bz2
+    --enable-calendar
+    --with-curl
+    --enable-exif
+    --with-gd
+    --enable-intl
+    --with-ldap
+    --enable-mbstring
+    --with-mcrypt
+    --with-pdo-mysql
+    --with-pdo-pgsql
+    --with-pgsql
+    --with-mysqli
+    --enable-zip
+    --with-pear
+    --with-imap
+    --with-imap-ssl
+    --with-libdir=lib64
+    --with-kerberos
+
   args:
     chdir: "{{ php_temp_path }}"
 
@@ -65,7 +111,7 @@
   args:
     chdir: "{{ php_temp_path }}"
 
-- name: "Install Php environment variables"
+- name: "Install PHP environment variables"
   template:
     src: "templates/php.sh.j2"
     dest: "/etc/profile.d/php.sh"
