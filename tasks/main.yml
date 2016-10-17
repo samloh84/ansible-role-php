@@ -75,30 +75,30 @@
 - name: "Compile PHP"
   shell: >
     ./configure
-    --prefix /opt/php/php-7.0.11
-    --enable-fpm
-    --with-openssl
-    --with-zlib
+    --prefix {{ php_home }}
     --enable-bcmath
-    --with-bz2
     --enable-calendar
-    --with-curl
     --enable-exif
-    --with-gd
+    --enable-fpm
     --enable-intl
-    --with-ldap
     --enable-mbstring
-    --with-mcrypt
-    --with-pdo-mysql
-    --with-pdo-pgsql
-    --with-pgsql
-    --with-mysqli
     --enable-zip
-    --with-pear
+    --with-bz2
+    --with-curl
+    --with-gd
     --with-imap
     --with-imap-ssl
-    --with-libdir=lib64
     --with-kerberos
+    --with-ldap
+    --with-libdir=lib64
+    --with-mcrypt
+    --with-mysqli
+    --with-openssl
+    --with-pdo-mysql
+    --with-pdo-pgsql
+    --with-pear
+    --with-pgsql
+    --with-zlib
 
   args:
     chdir: "{{ php_temp_path }}"
@@ -113,8 +113,11 @@
 
 - name: "Install PHP environment variables"
   template:
-    src: "templates/php.sh.j2"
+    src: "php.sh.j2"
     dest: "/etc/profile.d/php.sh"
+
+- name: "Upgrade PEAR"
+  shell: "source /etc/profile.d/php.sh && pear upgrade"
 
 - name: "Clean Temporary files"
   file:
