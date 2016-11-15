@@ -1,4 +1,4 @@
 php_version: 7.0.11
 prefix: "/opt/php"
-tmp_prefix: "/tmp/php"
+tmp_prefix: "{{ ansible_env.HOME }}/tmp/php"
 with_fpm: yes

@@ -21,8 +21,6 @@
     - "{{ tmp_dir }}"
     - "{{ php_home }}"
 
-
-
 - name: "Install GCC C++"
   yum:
     name: "gcc-c++"
@@ -99,7 +97,6 @@
     --with-pear
     --with-pgsql
     --with-zlib
-
   args:
     chdir: "{{ php_temp_path }}"
 
