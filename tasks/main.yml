@@ -125,7 +125,7 @@
 - name: "Fix Permissions"
   shell: "{{ item }}"
   with_items:
-    - "chown -R root:root {{ python_home }}"
+    - "chown -R root:root {{ php_home }}"
     - "find {{ php_home }} -perm -u+r -exec chmod a+r {} \\;"
     - "find {{ php_home }} -perm -u+w -exec chmod a+w {} \\;"
     - "find {{ php_home }} -perm -u+x -exec chmod a+x {} \\;"
