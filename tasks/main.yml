@@ -126,6 +126,6 @@
   shell: "{{ item }}"
   with_items:
     - "chown -R root:root {{ python_home }}"
-    - "find {{ python_home }} -perm -u+r -exec chmod a+r {} \\;"
-    - "find {{ python_home }} -perm -u+w -exec chmod a+w {} \\;"
-    - "find {{ python_home }} -perm -u+x -exec chmod a+x {} \\;"
+    - "find {{ php_home }} -perm -u+r -exec chmod a+r {} \\;"
+    - "find {{ php_home }} -perm -u+w -exec chmod a+w {} \\;"
+    - "find {{ php_home }} -perm -u+x -exec chmod a+x {} \\;"
